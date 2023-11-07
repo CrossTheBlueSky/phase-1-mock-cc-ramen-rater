@@ -36,7 +36,7 @@ function updateRamens(){
 
 function renderRamen(arr){
     const menu = document.getElementById("ramen-menu")
-    
+    menu.innerHTML = ""
     arr.forEach((e)=>{
         const newRamen = document.createElement("img")
         newRamen.src = e.image
@@ -67,6 +67,17 @@ function addNewRamen(ramen){
         restaurant: ramen.target[1].value,
         comment: ramen.target[4].value
     }
+
+    fetch(`http://localhost:3000/ramens/`, {
+        method: "POST", 
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(ramenData)})
+        .then(()=>{
+            updateRamens()
+        })
+
     const menu = document.getElementById("ramen-menu")
     const newRamen = document.createElement("img")
     newRamen.src = (ramen.target[2].value)
@@ -74,6 +85,7 @@ function addNewRamen(ramen){
     
     menu.append(newRamen)
 }
+
 
 function editRamen(form){
     
