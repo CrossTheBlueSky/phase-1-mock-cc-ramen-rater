@@ -1,5 +1,6 @@
 const ramenForm = document.getElementById("new-ramen")
 const editForm = document.getElementById("edit-ramen")
+const deleteButton = document.getElementById("delete-button")
 let currentRamen
 
 ramenForm.addEventListener("submit", (e)=>{
@@ -10,6 +11,10 @@ ramenForm.addEventListener("submit", (e)=>{
 editForm.addEventListener("submit", (e)=>{
     e.preventDefault()
     editRamen(e)
+})
+
+deleteButton.addEventListener("click", ()=>{
+    deleteRamen()
 })
 
 function initialize(){
@@ -105,6 +110,18 @@ function editRamen(form){
         })
 
 
+}
+
+function deleteRamen(){
+
+    fetch(`http://localhost:3000/ramens/${currentRamen.id}`, {
+        method: "DELETE", 
+        headers: {
+            "Content-Type": "application/json"
+        }})
+        .then(()=>{
+            updateRamens()
+        })
 }
 
     initialize()
