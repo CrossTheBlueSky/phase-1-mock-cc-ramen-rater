@@ -1,8 +1,15 @@
 const ramenForm = document.getElementById("new-ramen")
+const editForm = document.getElementById("edit-ramen")
+let currentRamen
 
 ramenForm.addEventListener("submit", (e)=>{
     e.preventDefault()
     addNewRamen(e)
+})
+
+editForm.addEventListener("submit", (e)=>{
+    e.preventDefault()
+    editRamen(e)
 })
 
 function initialize(){
@@ -11,8 +18,20 @@ function initialize(){
     .then(res=>res.json())
     .then((data)=>{
             renderRamen(data)
+            currentRamen = data[0]
+            ramenClicked(currentRamen)
     })
 
+}
+
+function updateRamens(){
+    fetch("http://localhost:3000/ramens")
+    .then(res=>res.json())
+    .then((data)=>{
+            renderRamen(data)
+            currentRamen = data[0]
+            ramenClicked(currentRamen)
+    })
 }
 
 function renderRamen(arr){
@@ -37,7 +56,7 @@ function ramenClicked(ramen){
     restaurant.innerText = ramen.restaurant
     rating.innerText = ramen.rating
     comments.innerText = ramen.comment
-    
+    currentRamen = ramen
 }
 
 function addNewRamen(ramen){
@@ -53,10 +72,27 @@ function addNewRamen(ramen){
     newRamen.src = (ramen.target[2].value)
     newRamen.addEventListener("click", ()=>{ramenClicked(ramenData)})
     
-
     menu.append(newRamen)
+}
+
+function editRamen(form){
     
-    
+    const patchObj = {
+        rating : form.target[0].value,
+        comment : form.target[1].value
+            }
+
+    fetch(`http://localhost:3000/ramens/${currentRamen.id}`, {
+        method: "PATCH", 
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(patchObj)})
+        .then(()=>{
+            updateRamens()
+        })
+
+
 }
 
     initialize()
